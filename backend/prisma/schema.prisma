@@ -1,0 +1,305 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  admin
+  pastor
+  @@map("user_role")
+}
+
+enum GroupType {
+  public
+  private
+  @@map("group_type")
+}
+
+enum GroupStatus {
+  pending
+  approved
+  rejected
+  @@map("group_status")
+}
+
+enum PrayerCategory {
+  personal
+  family
+  community
+  gratitude
+  intercession
+  @@map("prayer_category")
+}
+
+enum RecurringPattern {
+  daily
+  weekly
+  monthly
+  @@map("recurring_pattern")
+}
+
+enum ContentType {
+  photo
+  writing
+  video
+  @@map("content_type")
+}
+
+enum ApprovalStatus {
+  pending
+  approved
+  rejected
+  @@map("approval_status")
+}
+
+model User {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  name                 String                 @db.VarChar(255)
+  email                String                 @unique @db.VarChar(255)
+  password_hash        String                 @default("$2b$10$defaulthashplaceholder") @db.VarChar(255)
+  role                 UserRole               @default(user)
+  pastor_id            String?                @db.Text
+  avatar               String?                @db.Text
+  phone                String?                @db.VarChar(50)
+  address              String?                @db.Text
+  pincode              String?                @db.VarChar(20)
+  created_at           DateTime               @default(now()) @db.Timestamptz
+  updated_at           DateTime               @default(now()) @db.Timestamptz
+
+  pastor               Pastor?                @relation(fields: [pastor_id], references: [id], onDelete: SetNull)
+  created_groups       Group[]                @relation("GroupCreator")
+  group_memberships    GroupMember[]
+  group_join_requests  GroupJoinRequest[]
+  group_content_mgrs   GroupContentManager[]
+  posts                Post[]
+  post_likes           PostLike[]
+  post_reactions       PostReaction[]
+  comments             Comment[]
+  prayers              Prayer[]
+
+  @@map("users")
+}
+
+model Pastor {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  name                 String                 @db.VarChar(255)
+  title                String?                @db.VarChar(255)
+  bio                  String?                @db.Text
+  email                String?                @db.VarChar(255)
+  phone                String?                @db.VarChar(50)
+  church               String?                @db.VarChar(255)
+  photo                String?                @db.Text
+  address              String?                @db.Text
+  pincode              String?                @db.VarChar(20)
+  location_link        String?                @db.Text
+  specialties          String[]               @default([])
+  years_of_service     Int?                   @default(0)
+  donation_link        String?                @db.Text
+  created_at           DateTime               @default(now()) @db.Timestamptz
+  updated_at           DateTime               @default(now()) @db.Timestamptz
+
+  users                User[]
+  pastor_content       PastorContent[]
+  pastor_books         PastorBook[]
+
+  @@map("pastors")
+}
+
+model PastorContent {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  pastor_id            String                 @db.Text
+  type                 ContentType
+  title                String?                @db.VarChar(500)
+  content              String?                @db.Text
+  url                  String?                @db.Text
+  thumbnail            String?                @db.Text
+  description          String?                @db.Text
+  approval_status      ApprovalStatus         @default(pending)
+  created_at           DateTime               @default(now()) @db.Timestamptz
+
+  pastor               Pastor                 @relation(fields: [pastor_id], references: [id], onDelete: Cascade)
+
+  @@map("pastor_content")
+}
+
+model PastorBook {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  pastor_id            String                 @db.Text
+  title                String                 @db.VarChar(500)
+  description          String                 @db.Text
+  price                Decimal                @default(0) @db.Decimal(10, 2)
+  cover_image          String?                @db.Text
+  page_count           Int?
+  published_date       DateTime?              @db.Date
+  category             String?                @db.VarChar(100)
+  approval_status      ApprovalStatus         @default(approved)
+  created_at           DateTime               @default(now()) @db.Timestamptz
+
+  pastor               Pastor                 @relation(fields: [pastor_id], references: [id], onDelete: Cascade)
+
+  @@map("pastor_books")
+}
+
+model Group {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  name                 String                 @db.VarChar(255)
+  subtitle             String?                @db.Text
+  description          String                 @db.Text
+  type                 GroupType              @default(public)
+  status               GroupStatus            @default(pending)
+  created_by           String                 @db.Text
+  avatar               String?                @db.Text
+  created_at           DateTime               @default(now()) @db.Timestamptz
+  updated_at           DateTime               @default(now()) @db.Timestamptz
+
+  creator              User                   @relation("GroupCreator", fields: [created_by], references: [id], onDelete: Cascade)
+  members              GroupMember[]
+  join_requests        GroupJoinRequest[]
+  content_managers     GroupContentManager[]
+  posts                Post[]
+  prayers              Prayer[]
+
+  @@map("groups")
+}
+
+model GroupMember {
+  group_id             String                 @db.Text
+  user_id              String                 @db.Text
+  joined_at            DateTime               @default(now()) @db.Timestamptz
+
+  group                Group                  @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  user                 User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([group_id, user_id])
+  @@map("group_members")
+}
+
+model GroupJoinRequest {
+  group_id             String                 @db.Text
+  user_id              String                 @db.Text
+  requested_at         DateTime               @default(now()) @db.Timestamptz
+
+  group                Group                  @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  user                 User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([group_id, user_id])
+  @@map("group_join_requests")
+}
+
+model GroupContentManager {
+  group_id             String                 @db.Text
+  user_id              String                 @db.Text
+  assigned_at          DateTime               @default(now()) @db.Timestamptz
+
+  group                Group                  @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  user                 User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([group_id, user_id])
+  @@map("group_content_managers")
+}
+
+model Post {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  group_id             String?                @db.Text
+  author_id            String                 @db.Text
+  content              String                 @db.Text
+  image_url            String?                @db.Text
+  image_urls           String[]               @default([])
+  file_url             String?                @db.Text
+  file_name            String?                @db.VarChar(500)
+  comments_enabled     Boolean                @default(true)
+  created_at           DateTime               @default(now()) @db.Timestamptz
+  updated_at           DateTime               @default(now()) @db.Timestamptz
+
+  group                Group?                 @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  author               User                   @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  likes                PostLike[]
+  reactions            PostReaction[]
+  comments             Comment[]
+  prayers              Prayer[]
+  post_meeting         PostMeeting?
+
+  @@map("posts")
+}
+
+model PostMeeting {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  post_id              String                 @unique @db.Text
+  title                String                 @db.VarChar(500)
+  date                 DateTime               @db.Date
+  time                 DateTime               @db.Time
+  end_time             DateTime?              @db.Time
+  meet_link            String                 @db.Text
+
+  post                 Post                   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@map("post_meetings")
+}
+
+model PostLike {
+  post_id              String                 @db.Text
+  user_id              String                 @db.Text
+  created_at           DateTime               @default(now()) @db.Timestamptz
+
+  post                 Post                   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user                 User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([post_id, user_id])
+  @@map("post_likes")
+}
+
+model PostReaction {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  post_id              String                 @db.Text
+  user_id              String                 @db.Text
+  reaction             String                 @db.VarChar(10)
+  created_at           DateTime               @default(now()) @db.Timestamptz
+
+  post                 Post                   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user                 User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([post_id, user_id, reaction])
+  @@map("post_reactions")
+}
+
+model Comment {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  post_id              String                 @db.Text
+  author_id            String                 @db.Text
+  content              String                 @db.Text
+  created_at           DateTime               @default(now()) @db.Timestamptz
+
+  post                 Post                   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  author               User                   @relation(fields: [author_id], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Prayer {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  user_id              String                 @db.Text
+  title                String                 @db.VarChar(500)
+  description          String?                @db.Text
+  date                 DateTime               @db.Date
+  time                 DateTime               @db.Time
+  end_time             DateTime?              @db.Time
+  category             PrayerCategory?        @default(personal)
+  is_recurring         Boolean                @default(false)
+  recurring_pattern    RecurringPattern?
+  image_url            String?                @db.Text
+  meet_link            String?                @db.Text
+  group_id             String?                @db.Text
+  post_id              String?                @db.Text
+  created_at           DateTime               @default(now()) @db.Timestamptz
+
+  user                 User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  group                Group?                 @relation(fields: [group_id], references: [id], onDelete: SetNull)
+  post                 Post?                  @relation(fields: [post_id], references: [id], onDelete: SetNull)
+
+  @@map("prayers")
+}

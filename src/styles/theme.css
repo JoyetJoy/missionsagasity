@@ -1,0 +1,360 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  
+  /* Divine Light Theme - White with Black & Gold Highlights */
+  --background-solid: #fafafa;
+  --foreground: #0a0a0a;
+  --card: rgba(255, 255, 255, 0.98);
+  --card-foreground: #0a0a0a;
+  --popover: rgba(255, 255, 255, 0.98);
+  --popover-foreground: #0a0a0a;
+  
+  /* Gold Highlights Only */
+  --primary-solid: #0a0a0a;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #0a0a0a;
+  --muted: #e5e5e5;
+  --muted-foreground: #525252;
+  --accent: #d4af37;
+  --accent-foreground: #0a0a0a;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  
+  /* Subtle borders */
+  --border: rgba(0, 0, 0, 0.1);
+  --input: rgba(0, 0, 0, 0.2);
+  --input-background: rgba(255, 255, 255, 0.9);
+  --switch-background: #e5e5e5;
+  --ring: rgba(212, 175, 55, 0.5);
+  
+  /* Gold Highlight Color */
+  --gold: #d4af37;
+  --gold-light: #f4e4b0;
+  --gold-dark: #b8941f;
+  
+  /* Minimal glow effects - only for gold highlights */
+  --glow-gold: 0 0 15px rgba(212, 175, 55, 0.4);
+  
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --radius: 0.75rem;
+  
+  --chart-1: #0a0a0a;
+  --chart-2: #404040;
+  --chart-3: #d4af37;
+  --chart-4: #737373;
+  --chart-5: #525252;
+  
+  --sidebar: rgba(255, 255, 255, 0.98);
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #0a0a0a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: rgba(0, 0, 0, 0.1);
+  --sidebar-ring: rgba(212, 175, 55, 0.5);
+}
+
+.dark {
+  /* Divine Dark Theme - Pure Black with Gold Highlights */
+  --background-solid: #000000;
+  --foreground: #fafafa;
+  --card: rgba(10, 10, 10, 0.95);
+  --card-foreground: #fafafa;
+  --popover: rgba(10, 10, 10, 0.98);
+  --popover-foreground: #fafafa;
+  
+  /* Black dominant with gold accents */
+  --primary-solid: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #171717;
+  --secondary-foreground: #fafafa;
+  --muted: #0a0a0a;
+  --muted-foreground: #a3a3a3;
+  --accent: #d4af37;
+  --accent-foreground: #000000;
+  --destructive: #dc2626;
+  --destructive-foreground: #fecaca;
+  
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: rgba(212, 175, 55, 0.6);
+  
+  --sidebar: rgba(0, 0, 0, 0.98);
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #d4af37;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #171717;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: rgba(212, 175, 55, 0.6);
+}
+
+@theme inline {
+  --color-background: var(--background-solid);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary-solid);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply text-foreground bg-background;
+    min-height: 100vh;
+  }
+
+  /**
+  * Default typography styles with refined elegance
+  */
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}
+
+/* Minimal Utility Classes - Gold highlights only */
+@layer utilities {
+  .gold-highlight {
+    color: #d4af37;
+  }
+  
+  .gold-border {
+    border-color: #d4af37;
+  }
+  
+  .gold-glow {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  }
+  
+  .gold-text {
+    background: linear-gradient(to right, #d4af37, #f4e4b0, #d4af37);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .elegant-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+  
+  .dark .elegant-card {
+    background: rgba(10, 10, 10, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  }
+  
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes marqueeLeft {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marqueeRight {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  @keyframes flyAngel {
+    0% {
+      offset-distance: 0%;
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    3% {
+      offset-distance: 3%;
+      opacity: 1;
+      transform: scale(1);
+    }
+    /* Constant speed, full size throughout the entire flight */
+    90% {
+      offset-distance: 90%;
+      opacity: 1;
+      transform: scale(1);
+    }
+    /* Only shrink and fade right at the very end into Sign In */
+    95% {
+      offset-distance: 95%;
+      opacity: 0.7;
+      transform: scale(0.5);
+    }
+    98% {
+      offset-distance: 98%;
+      opacity: 0.3;
+      transform: scale(0.15);
+    }
+    100% {
+      offset-distance: 100%;
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+
+  @keyframes sparkle {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--sx), var(--sy)) scale(0);
+    }
+  }
+
+  @keyframes sparkleGlow {
+    0% {
+      box-shadow: 0 0 6px 3px rgba(212, 175, 55, 0.8);
+    }
+    50% {
+      box-shadow: 0 0 12px 6px rgba(212, 175, 55, 0.4);
+    }
+    100% {
+      box-shadow: 0 0 0px 0px rgba(212, 175, 55, 0);
+    }
+  }
+
+  @keyframes btnGoldFlash {
+    0% {
+      box-shadow: 0 0 0px rgba(212, 175, 55, 0);
+    }
+    30% {
+      box-shadow: 0 0 25px 8px rgba(212, 175, 55, 0.7);
+    }
+    100% {
+      box-shadow: 0 0 8px 2px rgba(212, 175, 55, 0.3);
+    }
+  }
+
+  @keyframes starTwinkle {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+  
+  /* Semi-transparent lined background for logged-in pages */
+  .lined-bg {
+    position: relative;
+    z-index: 1;
+    background-color: transparent !important;
+  }
+}
